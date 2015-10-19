@@ -426,6 +426,11 @@ int robot::readJointTorques(double *o_torques)
     return read_actual_torques(o_torques);
 }
 
+int robot::readJointCommandTorques(double *o_torques)
+{
+    return read_command_torques(o_torques);
+}
+
 void robot::readGyroSensor(unsigned int i_rank, double *o_rates)
 {
     read_gyro_sensor(i_rank, o_rates);
@@ -615,6 +620,7 @@ bool robot::checkEmergency(emg_reason &o_reason, int &o_id)
 bool robot::setServoGainPercentage(const char *i_jname, double i_percentage)
 {
     if ( i_percentage < 0 && 100 < i_percentage ) {
+        std::cerr << "[RobotHardware] Invalid percentage " <<  i_percentage << "[%] for setServoGainPercentage. Percentage should be in (0, 100)[%]." << std::endl;
         return false;
     }
     Link *l = NULL;
@@ -626,12 +632,14 @@ bool robot::setServoGainPercentage(const char *i_jname, double i_percentage)
             dgain[i] = default_dgain[i] * i_percentage/100.0;
             gain_counter[i] = 0;
         }
+        std::cerr << "[RobotHardware] setServoGainPercentage " << i_percentage << "[%] for all joints" << std::endl;
     }else if ((l = link(i_jname))){
         if (!read_pgain(l->jointId, &old_pgain[l->jointId])) old_pgain[l->jointId] = pgain[l->jointId];
         pgain[l->jointId] = default_pgain[l->jointId] * i_percentage/100.0;
         if (!read_dgain(l->jointId, &old_dgain[l->jointId])) old_dgain[l->jointId] = dgain[l->jointId];
         dgain[l->jointId] = default_dgain[l->jointId] * i_percentage/100.0;
         gain_counter[l->jointId] = 0;
+        std::cerr << "[RobotHardware] setServoGainPercentage " << i_percentage << "[%] for " << i_jname << std::endl;
     }else{
         char *s = (char *)i_jname; while(*s) {*s=toupper(*s);s++;}
         const std::vector<int> jgroup = m_jointGroups[i_jname];
@@ -643,6 +651,7 @@ bool robot::setServoGainPercentage(const char *i_jname, double i_percentage)
             dgain[jgroup[i]] = default_dgain[jgroup[i]] * i_percentage/100.0;
             gain_counter[jgroup[i]] = 0;
         }
+        std::cerr << "[RobotHardware] setServoGainPercentage " << i_percentage << "[%] for " << i_jname << std::endl;
     }
     return true;
 }
@@ -722,12 +731,20 @@ void robot::readExtraServoState(int id, int *state)
 
 bool robot::readDigitalInput(char *o_din)
 {
+#ifndef NO_DIGITAL_INPUT
     return read_digital_input(o_din);
+#else
+    return false;
+#endif
 }
 
 int robot::lengthDigitalInput()
 {
+#ifndef NO_DIGITAL_INPUT
     return length_digital_input();
+#else
+    return 0;
+#endif
 }
 
 bool robot::writeDigitalOutput(const char *i_dout)
