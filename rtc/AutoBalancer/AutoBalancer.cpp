@@ -1117,6 +1117,7 @@ bool AutoBalancer::setFootSteps(const OpenHRP::AutoBalancerService::FootstepsSeq
           spss[i].sps[j].step_time = gg->get_default_step_time();
           spss[i].sps[j].toe_angle = ((!gg_is_walking && i==0) ? 0.0 : gg->get_toe_angle());
           spss[i].sps[j].heel_angle = ((!gg_is_walking && i==0) ? 0.0 : gg->get_heel_angle());
+          spss[i].sps[j].default_orbit_type = gg->get_default_orbit_type;
       }
   }
   setFootStepsWithParam(fss, spss, overwrite_fs_idx);
