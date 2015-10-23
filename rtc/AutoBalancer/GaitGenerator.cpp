@@ -185,7 +185,7 @@ namespace rats
   };
 
   /* member function implementation for leg_coords_generator */
-  void leg_coords_generator::calc_current_swing_leg_steps (std::vector<step_node>& rets, const double step_height, const double _current_toe_angle, const double _current_heel_angle)
+    void leg_coords_generator::calc_current_swing_leg_steps (std::vector<step_node>& rets, const double step_height, const double _current_toe_angle, const double _current_heel_angle)
   {
     /* match the src step order and the dst step order */
     std::sort(swing_leg_src_steps.begin(), swing_leg_src_steps.end(),
@@ -437,7 +437,7 @@ namespace rats
 
     calc_ratio_from_double_support_ratio(default_double_support_ratio_before, default_double_support_ratio_after);
     swing_leg_steps.clear();
-    calc_current_swing_leg_steps(swing_leg_steps, current_step_height, current_toe_angle, current_heel_angle);
+    calc_current_swing_leg_steps(swing_leg_steps, current_step_height, current_toe_angle, current_heel_angle, current_step_orbit_type);
     if ( 1 <= lcg_count ) {
       lcg_count--;
     } else {
@@ -449,6 +449,7 @@ namespace rats
         current_step_height = fnsl[footstep_index].front().step_height;
         current_toe_angle = fnsl[footstep_index].front().toe_angle;
         current_heel_angle = fnsl[footstep_index].front().heel_angle;
+        current_step_orbit_type = fnsl[footstep_index].front.step_orbit_type
       } else {
         current_step_height = current_toe_angle = current_heel_angle = 0.0;
       }

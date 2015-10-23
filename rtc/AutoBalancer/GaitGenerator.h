@@ -26,24 +26,25 @@ namespace rats
         leg_type l_r;
         coordinates worldcoords;
         double step_height, step_time, toe_angle, heel_angle;
+        orbit_type step_orbit_type;
         step_node () : l_r(RLEG), worldcoords(coordinates()),
                        step_height(), step_time(),
-                       toe_angle(), heel_angle(){};
+                       toe_angle(), heel_angle(), step_orbit_type() {};
         step_node (const leg_type _l_r, const coordinates& _worldcoords,
                    const double _step_height, const double _step_time,
-                   const double _toe_angle, const double _heel_angle)
+                   const double _toe_angle, const double _heel_angle, const orbit_type _step_orbit_type)
             : l_r(_l_r), worldcoords(_worldcoords),
               step_height(_step_height), step_time(_step_time),
-              toe_angle(_toe_angle), heel_angle(_heel_angle) {};
+              toe_angle(_toe_angle), heel_angle(_heel_angle), step_orbit_type(_step_orbit_type) {};
         step_node (const std::string& _l_r, const coordinates& _worldcoords,
                    const double _step_height, const double _step_time,
-                   const double _toe_angle, const double _heel_angle)
+                   const double _toe_angle, const double _heel_angle, const orbit_type _step_orbit_type)
             : l_r((_l_r == "rleg") ? RLEG :
                   (_l_r == "rarm") ? RARM :
                   (_l_r == "larm") ? LARM :
                   LLEG), worldcoords(_worldcoords),
               step_height(_step_height), step_time(_step_time),
-              toe_angle(_toe_angle), heel_angle(_heel_angle) {};
+              toe_angle(_toe_angle), heel_angle(_heel_angle), step_orbit_type(_step_orbit_type) {};
         friend std::ostream &operator<<(std::ostream &os, const step_node &sn)
         {
             os << "footstep" << std::endl;
@@ -584,7 +585,7 @@ namespace rats
       interpolator* toe_heel_interpolator;
       double toe_pos_offset_x, heel_pos_offset_x, toe_angle, heel_angle, foot_dif_rot_angle;
       bool use_toe_joint;
-      void calc_current_swing_leg_steps (std::vector<step_node>& rets, const double step_height, const double _current_toe_angle, const double _current_heel_angle);
+        void calc_current_swing_leg_steps (std::vector<step_node>& rets, const double step_height, const double _current_toe_angle, const double _current_heel_angle, const orbit_type step_orbit_type);
       double calc_interpolated_toe_heel_angle (const toe_heel_phase start_phase, const toe_heel_phase goal_phase, const double start, const double goal);
       void modif_foot_coords_for_toe_heel_phase (coordinates& org_coords, const double _current_toe_angle, const double _current_heel_angle);
       void cycloid_midcoords (coordinates& ret, const coordinates& start,
